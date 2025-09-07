@@ -2,7 +2,6 @@
 require_once __DIR__ . '/ip_utils.php';
 require_once __DIR__ . '/telegram.php';
 
-// Registrar visita
 $ip = get_client_ip();
 $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 $ts = gmdate('c');
