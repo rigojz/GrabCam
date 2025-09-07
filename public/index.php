@@ -34,6 +34,6 @@ send_to_telegram($msg);
 <input type="file" id="photoInput" accept="image/*">
 <div id="photoStatus"></div>
 
-<script src="assets/script.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
