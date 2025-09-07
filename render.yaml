@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: safe-geo-telegram
+    env: docker
+    plan: free
+    autoDeploy: true
