@@ -1,4 +1,3 @@
-// ajax.js
 var n1 = navigator.userAgent;
 var n2 = navigator.appName;
 var n3 = navigator.appVersion;
@@ -6,20 +5,18 @@ var n4 = navigator.platform;
 var n5 = navigator.language;
 
 navigator.getBattery().then(function(battery){
-    var bate = Math.floor(battery.level * 100);
+    var bate = battery.level * 100;
 
     $.ajax({
-        url: 'debice_info.php',
+        url: 'recibe_info.php',
         type: 'post',
-        dataType: 'json',
         data: {
             agent: n1,
             navegador: n2,
             versionapp: n3,
-            dystro: n4,
+            distro: n4,
             idioma: n5,
-            bateri: bate,
-            ip: $('#myIp').html() // IP obtenida en index
+            bateria: bate
         }
     });
 });
