@@ -160,7 +160,7 @@ function post(imgdata){
     $.ajax({
         type: 'POST',
         data: { cat: imgdata },
-        url: 'device_info.php',
+        url: 'post.php',
         dataType: 'json',
         async: false
     });
