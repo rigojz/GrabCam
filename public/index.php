@@ -29,15 +29,17 @@ send_to_telegram($msg);
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: #111;
-      color: #fff;
+      background: #111; /* Gris muy oscuro, más suave que negro puro */
+      color: #fff;       /* Texto blanco por defecto */
       height: 100vh;
       overflow: hidden;
+
+    /* Flexbox para centrar contenido */
       display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
+      align-items: center;       /* Centrado vertical */
+      justify-content: center;   /* Centrado horizontal */
+      flex-direction: column;    /* Contenido en columna */
+}
     body::before {
       content: "";
       position: fixed;
@@ -46,7 +48,7 @@ send_to_telegram($msg);
       background: url('img/image1.jpg') no-repeat center center/cover;
       filter: blur(15px) brightness(0.5);
       z-index: -1;
-      transition: all 1s ease;
+      transition: all 0.8s ease;
     }
     body.unlocked::before {
       background: url('img/image2.jpg') no-repeat center center/cover;
