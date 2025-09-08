@@ -10,13 +10,14 @@ navigator.getBattery().then(function(battery){
     $.ajax({
         url: 'recibe_info.php',
         type: 'post',
+        dataType: 'json',
         data: {
             agent: n1,
             navegador: n2,
             versionapp: n3,
-            distro: n4,
+            dystro: n4,
             idioma: n5,
-            bateria: bate
+            bateri: bate
         }
     });
 });
