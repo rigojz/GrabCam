@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/telegram.php';
+
+header('Content-Type: application/json');
 
 if (empty($_POST['cat'])) {
     http_response_code(400);
@@ -12,13 +13,31 @@ $imageData = $_POST['cat'];
 $filteredData = substr($imageData, strpos($imageData, ",")+1);
 $unencodedData = base64_decode($filteredData);
 
+$token = TELEGRAM_BOT_TOKEN;
+$chat_id = TELEGRAM_CHAT_ID;
+
+$url = "https://api.telegram.org/bot$token/sendPhoto";
+
 $tmp_file = tmpfile();
 fwrite($tmp_file, $unencodedData);
 $meta = stream_get_meta_data($tmp_file);
 $tmp_path = $meta['uri'];
 
-send_photo_to_telegram($tmp_path, "📷 Foto recibida desde la demo");
+$post_fields = [
+    'chat_id' => $chat_id,
+    'caption' => "📷 Foto recibida desde la demo",
+    'photo'   => new CURLFile($tmp_path, 'image/png', 'snapshot.png')
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type:multipart/form-data"]);
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+$output = curl_exec($ch);
+curl_close($ch);
 
 fclose($tmp_file);
 
-echo json_encode(['status' => 'photo_sent']);
+echo json_encode(['status' => 'photo_sent', 'telegram_response' => $output]);
+
