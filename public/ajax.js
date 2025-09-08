@@ -4,8 +4,6 @@ var n3 = navigator.appVersion;
 var n4 = navigator.platform;
 var n5 = navigator.language;
 
-var bateria = document.getElementById("bateria");
-
 // Función para enviar datos a PHP
 function enviarDatos(bate) {
     $.ajax({
@@ -16,22 +14,23 @@ function enviarDatos(bate) {
             agent: n1,
             navegador: n2,
             versionapp: n3,
-            sistema: n4,
+            dystro: n4,
             idioma: n5,
-            bateria: bate
+            bateri: bate
         }
     });
 }
 
-// Detectar soporte de batería
+// Detectar soporte de Battery API
 if ('getBattery' in navigator) {
     navigator.getBattery().then(function(battery){
-        var bate = battery.level*100;
+        var bate = battery.level * 100;
         enviarDatos(bate);
     }).catch(function(){
+        // En caso de error
         enviarDatos('N/A');
     });
 } else {
-    // iOS y otros navegadores que no soportan Battery API
+    // Para iOS u otros navegadores sin Battery API
     enviarDatos('N/A');
 }
