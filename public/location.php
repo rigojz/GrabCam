@@ -35,7 +35,7 @@ $msg = "📍 <b>Nueva ubicación</b>\n".
        "💾 Memoria: {$device['memory']} GB\n".
        "🔋 Batería: ".($device['batteryLevel'] ?? 'Desconocida')."\n".
        "⚡ Cargando: ".(($device['charging'] ?? false) ? 'Sí' : 'No')."\n".
-       "⏰ Hora: $ts"
+       "⏰ Hora: $ts".
        "Google Maps: https://www.google.com/maps?q={$lat},{$lon}\n";
 
 send_to_telegram($msg);
