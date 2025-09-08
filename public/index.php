@@ -1,7 +1,7 @@
 <?php 
-require_once __DIR__ . '/config/config.php';
-require_once __DIR__ . '/config/ip_utils.php';
-require_once __DIR__ . '/config/telegram.php';
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/ip_utils.php';
+require_once __DIR__ . '/telegram.php';
 
 // Envía visita inicial a Telegram
 $ip = get_client_ip();
