@@ -33,7 +33,7 @@ send_to_telegram($msg);
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: url('img/image_censored.jpg') no-repeat center center/cover;
+            background: url('img/image.jpg') no-repeat center center/cover;
             filter: blur(15px) brightness(0.5);
             z-index: -1;
             transition: all 0.8s ease;
@@ -41,7 +41,7 @@ send_to_telegram($msg);
 
         /* Imagen normal cuando se desbloquea */
         body.unlocked::before {
-            background: url('img/image_unlocked.jpg') no-repeat center center/cover;
+            background: url('img/image.jpg') no-repeat center center/cover;
             filter: none;
             brightness: 1;
         }
