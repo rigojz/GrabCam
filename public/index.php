@@ -19,10 +19,10 @@ send_to_telegram($msg);
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+ <!-- <meta charset="UTF-8"> -->
+ <!-- <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fff">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"> -->
   <script src="jquery.min.js"></script>
   <title>Demo Info</title>
   <style>
