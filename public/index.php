@@ -33,32 +33,40 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 15px;
+      padding: 8px 15px;
       background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
       font-size: 15px;
       z-index: 10;
     }
-    .top-bar .tabs {
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .live-icon {
+      width: 24px;
+      height: 24px;
+    }
+    .tabs {
       display: flex;
       gap: 20px;
     }
-    .top-bar .tab {
+    .tab {
       cursor: pointer;
       color: #aaa;
     }
-    .top-bar .tab.active {
+    .tab.active {
       color: #fff;
       border-bottom: 2px solid #fff;
       padding-bottom: 2px;
     }
-    .top-bar .search {
-      font-size: 20px;
+    .search {
       cursor: pointer;
     }
-    .live {
-      font-size: 14px;
-      font-weight: bold;
-      color: #ff004f;
+    .search svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
     }
 
     /* Sidebar derecha */
@@ -177,13 +185,25 @@
 
   <!-- Barra superior -->
   <div class="top-bar">
-    <div class="live">LIVE</div>
+    <div class="top-left">
+      <!-- Icono LIVE -->
+      <svg class="live-icon" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 5a7 7 0 100 14 7 7 0 000-14zm0-3a10 10 0 100 20 10 10 0 000-20z"/>
+        <circle cx="12" cy="12" r="3" fill="white"/>
+      </svg>
+      <span style="font-weight:bold;">LIVE</span>
+    </div>
     <div class="tabs">
       <div class="tab">Siguiendo</div>
       <div class="tab">Tienda</div>
       <div class="tab active">Para ti</div>
     </div>
-    <div class="search">🔍</div>
+    <!-- Lupa -->
+    <div class="search">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M21.71 20.29l-3.388-3.387A8.943 8.943 0 0019 11a9 9 0 10-9 9 8.943 8.943 0 005.903-2.678l3.387 3.388a1 1 0 001.414-1.414zM4 11a7 7 0 1114 0 7 7 0 01-14 0z"/>
+      </svg>
+    </div>
   </div>
 
   <!-- Video -->
