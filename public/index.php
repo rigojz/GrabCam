@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TikTok UI Clone</title>
+  <title>TikTok ES</title>
   <style>
     body {
       margin: 0;
@@ -24,6 +24,10 @@
       height: 100%;
       object-fit: cover;
     }
+
+
+
+
 
     /* Barra superior */
     .top-bar {
@@ -198,6 +202,7 @@
       <div class="tab">Tienda</div>
       <div class="tab active">Para ti</div>
     </div>
+
     <!-- Lupa -->
     <div class="search">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -223,13 +228,13 @@
 
   <!-- Info inferior -->
   <div class="bottom-info">
-    <div class="username">Jorge Contreras</div>
-    <div class="description">People with crusty ahh toes be loving Mientras Tú Duermes 😭🙏 ... más</div>
+    <div class="username">Cesar Perez</div>
+    <div class="description">#fpy #School #LGBT #Viral #Cesar</div>
   </div>
 
   <!-- Barra de búsqueda inferior -->
   <div class="search-bar">
-    🔍 <input type="text" placeholder="Búsqueda · mientras tu duermes requinto">
+    🔍 <input type="text" placeholder="Irvin en tanga venga la alegria...">
   </div>
 
   <!-- Barra de navegación inferior -->
