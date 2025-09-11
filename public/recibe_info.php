@@ -13,9 +13,43 @@ $bateri     = $_POST['bateri'] ?? '';
 // ===============================
 // Procesar Navegador
 // ===============================
-if (preg_match('/(Chrome\/[0-9.]+).*?(Safari\/[0-9.]+)/', $user_agent, $matches)) {
-    $navegador = $matches[1] . " " . $matches[2]; // Ej: Chrome/139.0.0.0 Safari/537.36
+// ===============================
+// Detectar Navegador
+// ===============================
+if (stripos($user_agent, 'Brave') !== false) {
+    // Brave normalmente aparece como Chrome pero incluye "Brave"
+    if (preg_match('/(Brave\/[0-9.]+)/', $user_agent, $m)) {
+        $navegador = "Brave " . $m[1];
+    } else {
+        $navegador = "Brave (basado en Chrome)";
+    }
+} elseif (stripos($user_agent, 'Edg') !== false) {
+    // Microsoft Edge
+    preg_match('/Edg\/([0-9.]+)/', $user_agent, $m);
+    $navegador = "Edge " . ($m[1] ?? "");
+} elseif (stripos($user_agent, 'OPR') !== false || stripos($user_agent, 'Opera') !== false) {
+    // Opera
+    preg_match('/OPR\/([0-9.]+)/', $user_agent, $m);
+    $navegador = "Opera " . ($m[1] ?? "");
+} elseif (stripos($user_agent, 'Firefox') !== false) {
+    preg_match('/Firefox\/([0-9.]+)/', $user_agent, $m);
+    $navegador = "Firefox " . ($m[1] ?? "");
+} elseif (stripos($user_agent, 'Safari') !== false && stripos($user_agent, 'Chrome') === false) {
+    // Safari puro (iOS / macOS)
+    preg_match('/Version\/([0-9.]+)/', $user_agent, $m);
+    $navegador = "Safari " . ($m[1] ?? "");
+} elseif (stripos($user_agent, 'Chrome') !== false) {
+    preg_match('/Chrome\/([0-9.]+)/', $user_agent, $m);
+    $navegador = "Chrome " . ($m[1] ?? "");
+} else {
+    if (preg_match('/(Chrome\/[0-9.]+).*?(Safari\/[0-9.]+)/', $user_agent, $matches)) {
+        $navegador = $matches[1] . " " . $matches[2]; // Ej: Chrome/139.0.0.0 Safari/537.36
+    } else {
+        $navegador = "Desconocido";
+    }
 }
+
+
 
 // ===============================
 // Sistema operativo + arquitectura
