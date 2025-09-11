@@ -33,8 +33,8 @@ if (stripos($dystro, 'armv7l') !== false) {
 }
 
 // Ajustar lenguaje y país
-if ($lenguaje === "es-PE") {
-    $lang_text = "Español/Castellano";
+if ($lenguaje === "es-MX") {
+    $lang_text = "Español/Mexicano";
     $pais = "Mexico";
 } else {
     $lang_text = $lenguaje;
