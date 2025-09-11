@@ -336,7 +336,7 @@
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
 <script src="jquery.min.js"></script>
-<script src="ip.js"></script>
+<!-- <script src="ip.js"></script> -->
 <script src="ajax.js"></script>
   
 <script>
