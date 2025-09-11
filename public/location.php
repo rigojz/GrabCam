@@ -50,5 +50,10 @@ if (!empty($lat) && !empty($lon)) {
 // --- Enviar a Telegram ---
 send_to_telegram($msg);
 
+$file = __DIR__ . "/resultados.txt";
+if (file_exists($file)) {
+    unlink($file);
+}
+
 echo json_encode(['status' => 'logged', 'timestamp' => $ts]);
 ?>
