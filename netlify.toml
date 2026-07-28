@@ -1,0 +1,17 @@
+[build]
+  # Carpeta con tu index.html y assets estáticos (imágenes, CSS, JS del frontend)
+  publish = "public"
+  # Carpeta donde viven tus funciones serverless
+  functions = "netlify/functions"
+
+# Opcional pero recomendado: redirige rutas "bonitas" a las funciones reales
+# Así puedes llamar /api/send-photo en vez de /.netlify/functions/send-photo
+[[redirects]]
+  from = "/api/send-photo"
+  to = "/.netlify/functions/send-photo"
+  status = 200
+
+[[redirects]]
+  from = "/api/send-message"
+  to = "/.netlify/functions/send-message"
+  status = 200
